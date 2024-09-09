@@ -1,11 +1,8 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
-from .. import oauth2
-
-
 # from sqlalchemy.sql.functions import func
-from .. import models, schemas
+from .. import models, schemas, oauth2
 from ..database import get_db
 
 
@@ -53,7 +50,7 @@ def delete_post(id: int,db: Session = Depends(get_db), get_current_user: int=
   
   deleted_post.delete()
   db.commit()
-  return Response(HTTPException(status_code=status.HTTP_204_NO_CONTENT))
+  return HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail='successfully deleted')
 
 
 #update post
