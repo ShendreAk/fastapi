@@ -7,6 +7,7 @@ class PostBase(BaseModel):
     title: str
     body: str
     published: bool = True
+    ratings: int
 
 
 class PostCreate(PostBase):
@@ -14,7 +15,7 @@ class PostCreate(PostBase):
 
 
 class UserOut(BaseModel):
-    id: int
+    # id: int
     email: str
     created_at: datetime
 
@@ -25,9 +26,8 @@ class UserOut(BaseModel):
 class Post(PostBase):
     id: int
     created_at: datetime
-    owner_id: int
+    user_id: int
     owner: UserOut
-
     class Config:
         from_attributes = True
 
