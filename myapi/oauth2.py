@@ -8,7 +8,7 @@ from .database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_schemea = OAuth2PasswordBearer(tokenUrl='login')
 
 SECRET_KEY = "n3u878ecu8n9inmowjxjnnc938780238h9fy7rfny3c3bqywuqned9un97r57f76gtbyqiuhj5we46gs8hqw9yxbwdx"
 ALGORITHM = "HS256"
@@ -35,7 +35,7 @@ def verify_access_token(token: str, credential_exception):
     raise credential_exception
   return token_data
   
-def get_current_user(token: str= Depends(oauth2_scheme),  db: Session=Depends(get_db)):
+def get_current_user(token: str= Depends(oauth2_schemea),  db: Session=Depends(get_db)):
   credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
