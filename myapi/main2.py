@@ -4,16 +4,6 @@ from .database import engine
 
 from .routers import posts, users, auth
 
-from pydantic_settings import BaseSettings
-
-
-class Settings(BaseSettings):
-    SQLALCHEMY_DATABASE_URL: str 
-    ACCESS_TOKEN_EXPIRE_MINUTES:int
-    algorithm: str
-    secretkey: str
-
-settings = Settings()
 
 models.Base.metadata.create_all(bind=engine)
 
