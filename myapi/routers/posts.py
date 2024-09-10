@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List, Optional
-# from sqlalchemy.sql.functions import func
+from sqlalchemy import func
 from .. import models, schemas, oauth2
 from ..database import get_db
 
@@ -13,13 +13,16 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model= List[schemas.Post])
-def get_posts(db: Session = Depends(get_db),current_user= Depends(oauth2.get_current_user), 
+# @router.get("/", response_model= List[schemas.PostOut])
+@router.get("/", response_model= List[schemas.PostOut])
+def get_posts(db: Session = Depends(get_db), 
               limit:int=10, skip:int=0, search:Optional[str]=""):
   # posts = db.query(models.Post).filter(models.Post.user_id==current_user.id).all()
-  posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
-  # print(posts)
-  return posts
+  # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+  # posts = db.query(models.Post).all()
+  results = db.query(models.Post, func.count(models.Votes.post_id).label("votes")).join(models.Votes, models.Post.id == models.Votes.post_id, isouter=True).group_by(models.Post.id).all()
+  print(results)
+  return results
 
 
 @router.get("/{id}",response_model= schemas.Post)
@@ -27,8 +30,8 @@ def get_post(id: int, db: Session = Depends(get_db), current_user=Depends(oauth2
   post = db.query(models.Post).filter(models.Post.id==id).first()
   if not post:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='not found')
-  if post.user_id != current_user.id:
-    raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail="Not authorized")
+  # if post.user_id != current_user.id:
+  #   raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail="Not authorized")
   return  post
 
     
